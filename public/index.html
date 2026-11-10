@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmileCare Dental Clinic</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f7f6; color: #333; }
+        h1, h2 { color: #0077b6; }
+        .container { display: flex; gap: 40px; flex-wrap: wrap; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); width: 320px; }
+        input, select, button { width: 100%; padding: 10px; margin-top: 8px; margin-bottom: 16px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #0077b6; color: white; font-weight: bold; cursor: pointer; border: none; }
+        button:hover { background-color: #023e8a; }
+        ul { list-style: none; padding: 0; }
+        li { background: #e0f2fe; margin-bottom: 10px; padding: 10px; border-radius: 4px; border-left: 4px solid #0077b6; }
+    </style>
+</head>
+<body>
+
+    <h1>SmileCare Dental Clinic</h1>
+
+    <div class="container">
+        <!-- Booking Form -->
+        <div class="card">
+            <h2>Book Appointment</h2>
+            <form id="bookingForm">
+                <label>Full Name</label>
+                <input type="text" id="name" required placeholder="John Doe">
+
+                <label>Phone Number</label>
+                <input type="tel" id="phone" required placeholder="555-1234">
+
+                <label>Service</label>
+                <select id="service">
+                    <option value="Teeth Cleaning">Teeth Cleaning</option>
+                    <option value="Tooth Extraction">Tooth Extraction</option>
+                    <option value="Root Canal">Root Canal</option>
+                    <option value="Checkup & X-Ray">Checkup & X-Ray</option>
+                </select>
+
+                <label>Date</label>
+                <input type="date" id="date" required>
+
+                <label>Time Slot</label>
+                <input type="time" id="time" required>
+
+                <button type="submit">Submit Request</button>
+            </form>
+        </div>
+
+        <!-- Appointments List -->
+        <div class="card" style="flex-grow: 1;">
+            <h2>Upcoming Appointments</h2>
+            <ul id="appointmentList"></ul>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api/appointments';
+
+        // Load existing appointments
+        async function fetchAppointments() {
+            const res = await fetch(API_URL);
+            const data = await res.json();
+            const list = document.getElementById('appointmentList');
+            list.innerHTML = '';
+            
+            data.forEach(app => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${app.name}</strong> - ${app.service}<br><small>📅 ${app.date} at ${app.time} | 📞 ${app.phone}</small>`;
+                list.appendChild(li);
+            });
+        }
+
+        // Handle booking form submission
+        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const payload = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                service: document.getElementById('service').value,
+                date: document.getElementById('date').value,
+                time: document.getElementById('time').value
+            };
+
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                alert('Appointment booked!');
+                document.getElementById('bookingForm').reset();
+                fetchAppointments();
+            } else {
+                alert('Failed to book appointment.');
+            }
+        });
+
+        // Initial fetch
+        fetchAppointments();
+    </script>
+</body>
+</html>
