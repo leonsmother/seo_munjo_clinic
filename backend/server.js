@@ -1,4 +1,4 @@
-
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -18,6 +18,10 @@ app.use((req, res, next) => {
  
 app.use(cors({ origin: true, credentials: true }));
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
  
 
 app.use(session({
@@ -161,6 +165,10 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: err.message, stack: err.stack });
 });
  
+
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'Server is running and healthy' });
+});
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Dental Clinic Server running on http://localhost:${PORT}`);
