@@ -89,8 +89,13 @@ form.addEventListener('submit', async (e) => {
         time: document.getElementById('time').value
     };
 
-    if (!payload.name || !payload.phone) {
-        setStatus('Please enter your name and phone number.', 'error');
+        if (!payload.name || payload.name.length > 100) {
+        setStatus('Please enter a name up to 100 characters.', 'error');
+        return;
+    }
+
+    if (!/^\+?[\d\s\-()]{6,20}$/.test(payload.phone)) {
+        setStatus('Please enter a valid phone number (digits, spaces, + - ( ) only).', 'error');
         return;
     }
 
@@ -119,3 +124,4 @@ form.addEventListener('submit', async (e) => {
 
 // Initial fetch
 fetchAppointments();
+
