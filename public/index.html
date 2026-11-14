@@ -4,34 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmileCare Dental Clinic</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f7f6; color: #333; }
-        h1, h2 { color: #0077b6; }
-        .container { display: flex; gap: 40px; flex-wrap: wrap; }
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); width: 320px; }
-        input, select, button { width: 100%; padding: 10px; margin-top: 8px; margin-bottom: 16px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { background-color: #0077b6; color: white; font-weight: bold; cursor: pointer; border: none; }
-        button:hover { background-color: #023e8a; }
-        ul { list-style: none; padding: 0; }
-        li { background: #e0f2fe; margin-bottom: 10px; padding: 10px; border-radius: 4px; border-left: 4px solid #0077b6; }
-    </style>
+    <link rel="stylesheet" href="/frontend/css/style.css">
 </head>
 <body>
 
-    <h1>SmileCare Dental Clinic</h1>
+    <nav class="topbar">
+        <strong class="brand">SmileCare</strong>
+        <div class="topbar-right">
+            <a class="topbar-phone" href="tel:+200000000000">+20 000 000 0000</a>
+            <a class="btn" href="#book">Book now</a>
+        </div>
+    </nav>
 
-    <div class="container">
+    <header class="site-header">
+        <h1>SmileCare Dental Clinic</h1>
+        <p>Book a visit in under a minute. We’ll confirm by phone.</p>
+    </header>
+
+    <main class="container">
         <!-- Booking Form -->
-        <div class="card">
+        <section class="card" id="book">
             <h2>Book Appointment</h2>
             <form id="bookingForm">
-                <label>Full Name</label>
+                <label for="name">Full Name</label>
                 <input type="text" id="name" required placeholder="John Doe">
 
-                <label>Phone Number</label>
+                <label for="phone">Phone Number</label>
                 <input type="tel" id="phone" required placeholder="555-1234">
 
-                <label>Service</label>
+                <label for="service">Service</label>
                 <select id="service">
                     <option value="Teeth Cleaning">Teeth Cleaning</option>
                     <option value="Tooth Extraction">Tooth Extraction</option>
@@ -39,69 +40,78 @@
                     <option value="Checkup & X-Ray">Checkup & X-Ray</option>
                 </select>
 
-                <label>Date</label>
-                <input type="date" id="date" required>
+                <div class="row">
+                    <div>
+                        <label for="date">Date</label>
+                        <input type="date" id="date" required>
+                    </div>
+                    <div>
+                        <label for="time">Time Slot</label>
+                        <input type="time" id="time" required>
+                    </div>
+                </div>
 
-                <label>Time Slot</label>
-                <input type="time" id="time" required>
-
-                <button type="submit">Submit Request</button>
+                <button type="submit" id="submitBtn">Submit Request</button>
+                <p id="formStatus" class="status" role="status" aria-live="polite"></p>
             </form>
-        </div>
+        </section>
 
         <!-- Appointments List -->
-        <div class="card" style="flex-grow: 1;">
+        <section class="card card-list">
             <h2>Upcoming Appointments</h2>
             <ul id="appointmentList"></ul>
+            <p id="listEmpty" class="empty" hidden>No appointments yet. Book the first one using the form.</p>
+            <p id="listError" class="status error" role="alert" hidden>Couldn’t load appointments. Check your connection and refresh the page.</p>
+        </section>
+    </main>
+
+    <!-- Services -->
+    <section class="page-section" id="services">
+        <h2>Our services</h2>
+        <div class="service-grid">
+            <div class="card">
+                <h3>Teeth Cleaning</h3>
+                <p>Removes plaque and tartar to keep your gums and teeth healthy.</p>
+            </div>
+            <div class="card">
+                <h3>Tooth Extraction</h3>
+                <p>Safe removal of damaged or problem teeth, with care for your comfort.</p>
+            </div>
+            <div class="card">
+                <h3>Root Canal</h3>
+                <p>Treats infection inside the tooth so you can keep your natural tooth.</p>
+            </div>
+            <div class="card">
+                <h3>Checkup & X-Ray</h3>
+                <p>A full exam to catch problems early and plan any treatment you need.</p>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <script>
-        const API_URL = '/api/appointments';
+    <!-- Hours and location -->
+    <section class="page-section" id="visit">
+        <h2>Visit us</h2>
+        <div class="info-grid">
+            <div class="card">
+                <h3>Opening hours</h3>
+                <dl class="hours">
+                    <div><dt>Saturday – Thursday</dt><dd>10:00 – 20:00</dd></div>
+                    <div><dt>Friday</dt><dd>Closed</dd></div>
+                </dl>
+            </div>
+            <div class="card">
+                <h3>Find us</h3>
+                <p>123 Example Street, Cairo, Egypt</p>
+                <p><a href="tel:+200000000000">+20 000 000 0000</a><br>
+                <a href="mailto:hello@smilecare.example">hello@smilecare.example</a></p>
+            </div>
+        </div>
+    </section>
 
-        // Load existing appointments
-        async function fetchAppointments() {
-            const res = await fetch(API_URL);
-            const data = await res.json();
-            const list = document.getElementById('appointmentList');
-            list.innerHTML = '';
-            
-            data.forEach(app => {
-                const li = document.createElement('li');
-                li.innerHTML = `<strong>${app.name}</strong> - ${app.service}<br><small>📅 ${app.date} at ${app.time} | 📞 ${app.phone}</small>`;
-                list.appendChild(li);
-            });
-        }
+    <footer class="site-footer">
+        <p>© 2026 SmileCare Dental Clinic</p>
+    </footer>
 
-        // Handle booking form submission
-        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const payload = {
-                name: document.getElementById('name').value,
-                phone: document.getElementById('phone').value,
-                service: document.getElementById('service').value,
-                date: document.getElementById('date').value,
-                time: document.getElementById('time').value
-            };
-
-            const res = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (res.ok) {
-                alert('Appointment booked!');
-                document.getElementById('bookingForm').reset();
-                fetchAppointments();
-            } else {
-                alert('Failed to book appointment.');
-            }
-        });
-
-        // Initial fetch
-        fetchAppointments();
-    </script>
+    <script src="/frontend/js/app.js"></script>
 </body>
 </html>
